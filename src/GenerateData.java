@@ -27,6 +27,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import jxl.Workbook;
+import jxl.write.Label;
 import jxl.write.Number;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
@@ -54,31 +55,39 @@ public class GenerateData {
 		//default_Settings = defaultOrCustom(); XXX - UnComment this in order to give the user control over the values
 
 		if (!default_Settings) {
-			motionType = typeOfMotion(motionType);
+			//motionType = typeOfMotion(motionType);
 			//num_Periods = numberOfPeriods(3);
-			tolerance = getNumber("the tolerance", .05);
+			//tolerance = getNumber("the tolerance", .05);
 		}
 		
 		// Create a file
 		
 		int rows = 4 * 24 * 15 ; //number of rows in the excel file - 4 days * 24 hours per day * 15 data points per hour (every 4 mins)
-		
+		double value;
 		JFrame frame=new JFrame(); //creates frame
 	    JButton[][] grid; //names the grid of buttons
-
+	    
 		try {
 			File exlFile = new File("movement_data.xls");
 			WritableWorkbook writableWorkbook = Workbook
 					.createWorkbook(exlFile);
 
-			WritableSheet writableSheet = writableWorkbook.createSheet(
-					"Sheet1", 0);
-
-			for (int i = 0; i < rows; i++) {
-				Number x_value = new Number (0, i, 0);
-				Number y_value = new Number (1, i, 0);
-				// Math.sin(double x); - returns a double 
+			WritableSheet writableSheet = writableWorkbook.createSheet("Sheet1", 0);
+			Label time = new Label (0, 0, "Time");
+			Label x = new Label (1, 0, "X");
+			Label y = new Label (2, 0, "Y");
+			
+			writableSheet.addCell(time);
+			writableSheet.addCell(x);
+			writableSheet.addCell(y);
+			
+			for (int i = 1; i <= rows; i++) {
+				value = Math.PI/(rows/days)*(i-1);
+				Number time_stamp = new Number (0, i, (i-1)*4*60);
+				Number x_value = new Number (1, i, 317995 + (40 * Math.sin(value)));
+				Number y_value = new Number (2, i, 4367675 + (135 * Math.cos(value)));
 				
+				writableSheet.addCell(time_stamp);
 				writableSheet.addCell(x_value);
 				writableSheet.addCell(y_value);
 			}
