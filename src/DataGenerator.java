@@ -41,8 +41,7 @@ public class DataGenerator {
 	public static void main(String[] args) {
 		// Default Values
 		int min_X = 0, max_X = 100, min_Y = 0, max_Y = 100; // location preferences
-		boolean periodic = true; //
-		boolean default_Settings = true;
+		boolean default_Settings = false; //XXX - Change to true in order to make it easier for the user
 		String motionType = "circular";
 		int days = 4; // days of data that will be recorded
 		double tolerance = 0; // tolerance (meters)
@@ -55,44 +54,17 @@ public class DataGenerator {
 		//default_Settings = defaultOrCustom(); XXX - UnComment this in order to give the user control over the values
 
 		if (!default_Settings) {
-			periodic = periodicity();
 			motionType = typeOfMotion(motionType);
-			num_Periods = numberOfPeriods(3);
-			tolerance = getNumber("the tolerance", 4);
-			do {
-				days = daysOfData(4);
-			} while (days <= 0);
-			do {
-				sampling = getNumber("the sampling rate", 4);
-			} while (sampling <= 0);
-			min_X = getNumber("minimum x", min_X);
-			do {
-				max_X = getNumber("maximum x", max_X);
-			} while (max_X <= min_X);
-			min_Y = getNumber("minimum y", min_Y);
-			do {
-				max_Y = getNumber("maximum y", max_Y);
-			} while (max_Y <= min_Y);
+			//num_Periods = numberOfPeriods(3);
+			tolerance = getNumber("the tolerance", .05);
 		}
 		
-		/*JFrame f = new JFrame("Plotting Points");  
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
-        PointGrapher x = new PointGrapher();
-        f.getContentPane().add(x);  
-        f.setSize(400,400);  
-        f.setLocation(200,200);  
-        f.setVisible(true);
-*/
-		//TODO - DATA Checking for user FUCK-UP
-		//TODO - Add a form to make data entry easier
-
 		// Create a file
 		
-		int rows = 4* 24 * 15 ; //number of rows in the excel file - 4 days * 24 hours per day * 15 data points per hour
+		int rows = 4 * 24 * 15 ; //number of rows in the excel file - 4 days * 24 hours per day * 15 data points per hour (every 4 mins)
 		
 		JFrame frame=new JFrame(); //creates frame
 	    JButton[][] grid; //names the grid of buttons
-
 
 		try {
 			File exlFile = new File("movement_data.xls");
@@ -105,6 +77,7 @@ public class DataGenerator {
 			for (int i = 0; i < rows; i++) {
 				Number x_value = new Number (0, i, 0);
 				Number y_value = new Number (1, i, 0);
+				// Math.sin(double x); - returns a double 
 				
 				writableSheet.addCell(x_value);
 				writableSheet.addCell(y_value);
@@ -143,23 +116,6 @@ public class DataGenerator {
 		return inputString;
 	}
 
-	private static boolean periodicity() {
-		Object[] periods = {"periodic", "non-periodic"};
-		String periodicity = (String)JOptionPane.showInputDialog(
-				null,
-				"Choose type of motion:\n",
-				"Motion Type",
-				JOptionPane.PLAIN_MESSAGE,
-				null,
-				periods,
-				"periodic");
-
-		if (periodicity.equals("non-periodic"))
-			return false;
-
-		return true;
-	}
-
 	private static boolean defaultOrCustom() {
 		Object[] options = {"default", "custom"};
 		String input = (String)JOptionPane.showInputDialog(
@@ -185,17 +141,9 @@ public class DataGenerator {
 		return default_value;
 	}
 
-	private static int daysOfData(int default_value){
-		String input = JOptionPane.showInputDialog(null, "How many days of data would you like?");
-		int output = Integer.parseInt(input);
-		if (output > 0)
-			return output;
-		return default_value;
-	}
-
-	private static int getNumber(String value, int default_value){
+	private static double getNumber(String value, double default_value){
 		String input = JOptionPane.showInputDialog(null, "What would you like for the value of " + value);
-		int output = Integer.parseInt(input);
+		double output = Double.parseDouble(input);
 		if (output > 0)
 			return output;
 		return default_value;
@@ -208,25 +156,4 @@ public class DataGenerator {
 	private static int yValueGenerator(int time, int frequency, int min, int max) {
 		return time;
 	}
-	/*
-    public static void ButtonGrid(int width, int length){ //constructor
-            frame.setLayout(new GridLayout(width,length)); //set layout
-            grid=new JButton[width][length]; //allocate the size of grid
-            for(int y=0; y<length; y++){
-                    for(int x=0; x<width; x++){
-                            grid[x][y]=new JButton("("+x+","+y+")"); //creates new button    
-                            frame.add(grid[x][y]); //adds button to grid
-                    }
-            }
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.pack(); //sets appropriate size for frame
-            frame.setVisible(true); //makes frame visible
-    }
-    
-    public static void main(String[] args) {
-            new ButtonGrid(3,3);//makes new ButtonGrid with 2 parameters
-    }
-*/
-    
-	
 }
