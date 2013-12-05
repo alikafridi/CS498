@@ -33,7 +33,7 @@ import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
 import jxl.write.biff.RowsExceededException;
 
-public class DataGenerator {
+public class GenerateData {
 
 	/**
 	 * @param args

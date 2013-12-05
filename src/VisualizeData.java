@@ -1,6 +1,8 @@
+import java.awt.Color;
 import java.io.IOException;
 
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import jxl.*; 
@@ -53,8 +55,6 @@ public class VisualizeData{
             e.printStackTrace();
         }
 
-		/*
-
 		JFrame frame=new JFrame("CS 498 Data");
 		frame.setSize(frame_width,frame_height);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -102,6 +102,6 @@ public class VisualizeData{
 			
 			canvas.endBuffer();
 			canvas.sleep(50);
-		}*/
+		}
 	}
 }
