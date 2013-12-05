@@ -14,7 +14,7 @@ public class BounceBall {
 		
 
 		JFrame frame=new JFrame("CS 498 Data");
-		frame.setSize(600,600);
+		frame.setSize(660,660);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		JCanvas canvas=new JCanvas();
 		frame.add(canvas);

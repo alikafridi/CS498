@@ -1,7 +1,13 @@
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.geom.*;
-import javax.swing.*;
+import java.io.IOException;
+
+
+import javax.swing.JOptionPane;
+
+import jxl.*; 
+import jxl.read.biff.BiffException; 
+import java.io.File; 
+import java.io.IOException; 
+
 
 public class VisualizeData{
 	
@@ -16,10 +22,37 @@ public class VisualizeData{
 
 		JOptionPane.showMessageDialog(null, "Ali Afridi \nCS 498 - Data Visualizer");
 		
-		String file_name = JOptionPane.showInputDialog(null, "What is the name of the file?");
+		//String file_name = JOptionPane.showInputDialog(null, "What is the name of the file?");
 		
-		
-		
+		try {
+            
+            //Create a workbook object from <span id="IL_AD5" class="IL_AD">the file</span> at specified location.
+            //Change the path of the file as per the location on your computer.
+            Workbook wrk1 =  Workbook.getWorkbook(new File("write_test.xls"));
+            
+            //Obtain the reference to the first sheet in the workbook
+            Sheet sheet1 = wrk1.getSheet(0);
+
+            //Obtain reference to the Cell using getCell(int col, int row) method of sheet
+            Cell colArow1 = sheet1.getCell(0, 0);
+            Cell colArow2 = sheet1.getCell(1, 0);
+             
+            //Read the contents of the Cell using getContents() method, which will return
+            //it as a String
+            String str_colArow1 = colArow1.getContents();
+            String str_colArow2 = colArow2.getContents();
+             
+            //Display the cell contents
+            System.out.println("Contents of cell Col A Row 1: \""+str_colArow1 + "\"");
+            System.out.println("Contents of cell Col A Row 2: \""+str_colArow2 + "\"");
+ 
+             
+        } catch (BiffException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 		/*
 
 		JFrame frame=new JFrame("CS 498 Data");

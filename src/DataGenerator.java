@@ -45,14 +45,14 @@ public class DataGenerator {
 		boolean default_Settings = true;
 		String motionType = "circular";
 		int days = 4; // days of data that will be recorded
-		double tolerance = .25; // tolerance (meters)
-		int num_Periods = 3; // number of periods in a day
+		double tolerance = 0; // tolerance (meters)
+		int num_Periods = 1; // number of periods in a day
 		int sampling = 4; // time difference in between measurement (mins)
 
 		// Ask the user the necessary questions about the data
 		JOptionPane.showMessageDialog(null, "Ali Afridi \nCS 498 - Data Generator");
 
-		default_Settings = defaultOrCustom();
+		//default_Settings = defaultOrCustom(); XXX - UnComment this in order to give the user control over the values
 
 		if (!default_Settings) {
 			periodic = periodicity();
@@ -88,9 +88,8 @@ public class DataGenerator {
 
 		// Create a file
 		
-		int rows = days * 24 * sampling; //number of rows in the excel file
+		int rows = 4* 24 * 15 ; //number of rows in the excel file - 4 days * 24 hours per day * 15 data points per hour
 		
-
 		JFrame frame=new JFrame(); //creates frame
 	    JButton[][] grid; //names the grid of buttons
 
@@ -104,8 +103,8 @@ public class DataGenerator {
 					"Sheet1", 0);
 
 			for (int i = 0; i < rows; i++) {
-				Number x_value = new Number (i, 0, 0);
-				Number y_value = new Number (i, 0, 0);
+				Number x_value = new Number (0, i, 0);
+				Number y_value = new Number (1, i, 0);
 				
 				writableSheet.addCell(x_value);
 				writableSheet.addCell(y_value);
@@ -123,7 +122,7 @@ public class DataGenerator {
 			e.printStackTrace();
 		}
 		// TODO - Ask the user the file they would like to save and its location 
-
+		JOptionPane.showMessageDialog(null, "Data Generation Complete");
 	}
 
 
