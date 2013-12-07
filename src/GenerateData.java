@@ -1,6 +1,7 @@
 /**
  * @author Ali K. Afridi
- * Last Modified: 11/15/13
+ * 
+ * Last Modified: 12/07/13
  * 
  * This software generates data based on user-preferences
  * 
@@ -55,13 +56,12 @@ public class GenerateData {
 		//default_Settings = defaultOrCustom(); XXX - UnComment this in order to give the user control over the values
 
 		if (!default_Settings) {
-			//motionType = typeOfMotion(motionType);
+			motionType = typeOfMotion(motionType);
 			//num_Periods = numberOfPeriods(3);
 			//tolerance = getNumber("the tolerance", .05);
 		}
 		
 		// Create a file
-		
 		int rows = 4 * 24 * 15 ; //number of rows in the excel file - 4 days * 24 hours per day * 15 data points per hour (every 4 mins)
 		double value;
 		JFrame frame=new JFrame(); //creates frame
@@ -82,10 +82,11 @@ public class GenerateData {
 			writableSheet.addCell(y);
 			
 			for (int i = 1; i <= rows; i++) {
-				value = Math.PI/(rows/days)*(i-1);
+				value = 2*Math.PI/(rows/days)*(i-1);
 				Number time_stamp = new Number (0, i, (i-1)*4*60);
-				Number x_value = new Number (1, i, 317995 + (40 * Math.sin(value)));
-				Number y_value = new Number (2, i, 4367675 + (135 * Math.cos(value)));
+				
+				Number x_value = new Number (1, i, xValueGenerator(motionType, value));//;
+				Number y_value = new Number (2, i, yValueGenerator(motionType, value));
 				
 				writableSheet.addCell(time_stamp);
 				writableSheet.addCell(x_value);
@@ -109,7 +110,7 @@ public class GenerateData {
 
 
 	private static String typeOfMotion(String default_value) {
-		Object[] options = {"circular", "square", "rectangular", "lemniscatic(8)", "random"};
+		Object[] options = {"oval", "lemniscatic(8)"}; //XXX - Add "square", "rectangular", and "random"
 		String inputString = (String)JOptionPane.showInputDialog(
 				null,
 				"Choose type of motion:\n",
@@ -141,7 +142,7 @@ public class GenerateData {
 
 		return true;
 	}
-
+/*
 	private static int numberOfPeriods(int default_value){
 		String input = JOptionPane.showInputDialog(null, "How many periods should there be in a day?");
 		int output = Integer.parseInt(input);
@@ -157,12 +158,16 @@ public class GenerateData {
 			return output;
 		return default_value;
 	}
-	
-	private static int xValueGenerator(int time, int frequency, int min, int max) {
-		return time;
+*/	
+	private static double xValueGenerator(String type, double value) {
+		if (type.equals("lemniscatic(8)")) {
+			return 317995 + (40 * Math.sin(2*value));
+		}
+		// Otherwise return points for circle
+		return 317995 + (40 * Math.sin(value));
 	}
 	
-	private static int yValueGenerator(int time, int frequency, int min, int max) {
-		return time;
+	private static double yValueGenerator(String type, double value) {
+		return 4367675 + (135 * Math.cos(value));
 	}
 }
