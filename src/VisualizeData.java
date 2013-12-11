@@ -1,15 +1,18 @@
 import java.awt.Color;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import jxl.*; 
-import jxl.read.biff.BiffException; 
-import java.io.File; 
-import java.io.IOException; 
+import jxl.Cell;
+import jxl.Sheet;
+import jxl.Workbook;
+import jxl.read.biff.BiffException;
 
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 public class VisualizeData{
 	
@@ -25,7 +28,6 @@ public class VisualizeData{
 		JOptionPane.showMessageDialog(null, "Ali Afridi \nCS 498 - Data Visualizer");
 		
 		//String file_name = JOptionPane.showInputDialog(null, "What is the name of the file?");
-		
 
 		JFrame frame=new JFrame("CS 498 Data");
 		frame.setSize(frame_width,frame_height);
@@ -43,6 +45,13 @@ public class VisualizeData{
             
             //Create a workbook object from <span id="IL_AD5" class="IL_AD">the file</span> at specified location.
             //Change the path of the file as per the location on your computer.
+			//FileInputStream file = new FileInputStream(new File("M0110.xlsx"));
+			//Get the workbook instance for XLS file 
+			//HSSFWorkbook workbook = new HSSFWorkbook(file);
+			
+			//Get first sheet from the workbook
+			//HSSFSheet sheet = workbook.getSheetAt(0);
+			
             Workbook wrk1 =  Workbook.getWorkbook(new File("movement_data.xls"));
             
             //Obtain the reference to the first sheet in the workbook
@@ -92,8 +101,8 @@ public class VisualizeData{
     			
     			/** DAY 3 **/
                 //Obtain reference to the Cell using getCell(int col, int row) method of sheet
-                Cell x_cell3 = sheet1.getCell(1, row+rows_in_days);
-                Cell y_cell3 = sheet1.getCell(2, row+rows_in_days);
+                Cell x_cell3 = sheet1.getCell(1, row+(rows_in_days*2));
+                Cell y_cell3 = sheet1.getCell(2, row+(rows_in_days*2));
                  
                 //Read the contents of the Cell using getContents() method, which will return
                 //it as a String
@@ -110,9 +119,9 @@ public class VisualizeData{
     			
     			/** DAY 4 **/
                 //Obtain reference to the Cell using getCell(int col, int row) method of sheet
-                Cell x_cell4 = sheet1.getCell(1, row+rows_in_days);
-                Cell y_cell4 = sheet1.getCell(2, row+rows_in_days);
-                 
+                Cell x_cell4 = sheet1.getCell(1, row+(rows_in_days*3));
+                Cell y_cell4 = sheet1.getCell(2, row+(rows_in_days*3));
+                
                 //Read the contents of the Cell using getContents() method, which will return
                 //it as a String
                 String x_string4 = x_cell4.getContents();
@@ -148,7 +157,7 @@ public class VisualizeData{
 
     			row++;
     			canvas.endBuffer();
-    			canvas.sleep(25);
+    			canvas.sleep(50);
     		}
  
              

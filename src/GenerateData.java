@@ -58,7 +58,7 @@ public class GenerateData {
 		if (!default_Settings) {
 			motionType = typeOfMotion(motionType);
 			//num_Periods = numberOfPeriods(3);
-			//tolerance = getNumber("the tolerance", .05);
+			tolerance = getNumber("the tolerance", .05);
 		}
 		
 		// Create a file
@@ -85,8 +85,8 @@ public class GenerateData {
 				value = 2*Math.PI/(rows/days)*(i-1);
 				Number time_stamp = new Number (0, i, (i-1)*4*60);
 				
-				Number x_value = new Number (1, i, xValueGenerator(motionType, value));//;
-				Number y_value = new Number (2, i, yValueGenerator(motionType, value));
+				Number x_value = new Number (1, i, xValueGenerator(motionType, value)+getDeviation(tolerance));
+				Number y_value = new Number (2, i, yValueGenerator(motionType, value)+getDeviation(tolerance));
 				
 				writableSheet.addCell(time_stamp);
 				writableSheet.addCell(x_value);
@@ -151,6 +151,7 @@ public class GenerateData {
 		return default_value;
 	}
 
+*/	
 	private static double getNumber(String value, double default_value){
 		String input = JOptionPane.showInputDialog(null, "What would you like for the value of " + value);
 		double output = Double.parseDouble(input);
@@ -158,7 +159,6 @@ public class GenerateData {
 			return output;
 		return default_value;
 	}
-*/	
 	private static double xValueGenerator(String type, double value) {
 		if (type.equals("lemniscatic(8)")) {
 			return 317995 + (40 * Math.sin(2*value));
@@ -169,5 +169,9 @@ public class GenerateData {
 	
 	private static double yValueGenerator(String type, double value) {
 		return 4367675 + (135 * Math.cos(value));
+	}
+	
+	private static double getDeviation(double number) {
+		return (-number+(int)(Math.random()*(number*2)+1));
 	}
 }
