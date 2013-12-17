@@ -6,9 +6,12 @@ import javax.swing.JOptionPane;
 import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
+import jxl.format.Colour;
 import jxl.read.biff.BiffException;
 import jxl.write.Label;
 import jxl.write.Number;
+import jxl.write.WritableCellFormat;
+import jxl.write.WritableFont;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 
@@ -154,20 +157,67 @@ public class AnalyzerSimplified {
 			writableSheet.addCell(y);
 			writableSheet.addCell(speed);
 			writableSheet.addCell(direction);
-
-			int a=1;
+			// Create cell font and format
+		    WritableFont cellFont = new WritableFont(WritableFont.ARIAL, 10);
+		    cellFont.setBoldStyle(WritableFont.BOLD);
+		    
+		    WritableCellFormat cellFormat = new WritableCellFormat(cellFont);
+		    cellFormat.setBackground(Colour.LIGHT_GREEN);
+		    
+		    WritableFont cellFont2 = new WritableFont(WritableFont.ARIAL, 10);
+		    
+		    WritableCellFormat cellFormat2 = new WritableCellFormat(cellFont2);
+		    
+			int a = 1;
 			for (int i = 1; i < rows/4; i++){
+				double data1 = data[i][4];
+				double data2 = data[i+(rows_in_days)][4];
+				double data3 = data[i+(rows_in_days)*2][4];
+				double data4 = data[i+(rows_in_days)*3][4]; 
+				
+				boolean color1 = false;
+				boolean color2 = false;
+				boolean color3 = false;
+				boolean color4 = false;
+				
+				if (data1 == data2 && data1 == data3) {
+					color1 = true; 
+					color2 = true;
+					color3 = true;
+					color4 = false;
+				} else if (data1 == data3 && data1 == data4) {
+					color1 = true;
+					color2 = false; 
+					color3 = true;
+					color4 = true;
+				} else if (data1 == data2 && data1 == data4) {
+					color1 = true;
+					color2 = true; 
+					color3 = false;
+					color4 = true;
+				} else if (data2 == data3 && data2 == data4) {
+					color1 = false;
+					color2 = true; 
+					color3 = true;
+					color4 = true;
+				} else {
+					color1 = false;
+					color2 = false; 
+					color3 = false;
+					color4 = false;
+				}
+				
 				Number time_stamp = new Number (0, a, data[i][0]);
-				Number x_value = new Number (1, a, data[i][4]);
-				Number y_value = new Number (2, a, data[i+(rows_in_days)][4]);
-				Number speed_value = new Number (3, a, data[i+(rows_in_days)*2][4]);
-				Number direction_value = new Number (4, a, data[i+(rows_in_days)*3][4]);
-
+				Number day1 = new Number (1, a, data1, (color1)?cellFormat:cellFormat2);
+				Number day2 = new Number (2, a, data2, (color2)?cellFormat:cellFormat2);
+				Number day3 = new Number (3, a, data3, (color3)?cellFormat:cellFormat2);
+				Number day4 = new Number (4, a, data4, (color4)?cellFormat:cellFormat2);
+			
 				writableSheet.addCell(time_stamp);
-				writableSheet.addCell(x_value);
-				writableSheet.addCell(y_value);
-				writableSheet.addCell(speed_value);
-				writableSheet.addCell(direction_value);
+				writableSheet.addCell(day1);
+				writableSheet.addCell(day2);
+				writableSheet.addCell(day3);
+				writableSheet.addCell(day4);
 				a++;
 			}
 			
@@ -185,11 +235,48 @@ public class AnalyzerSimplified {
 
 			a=1;
 			for (int i = 1; i < rows/4; i++){
+				String data1 = directions[i];
+				String data2 = directions[i+(rows_in_days)];
+				String data3 = directions[i+(rows_in_days)*2];
+				String data4 = directions[i+(rows_in_days)*3]; 
+				
+				boolean color1 = false;
+				boolean color2 = false;
+				boolean color3 = false;
+				boolean color4 = false;
+				
+				if (data1.equals(data2) && data1.equals(data3)) {
+					color1 = true; 
+					color2 = true;
+					color3 = true;
+					color4 = false;
+				} else if (data1.equals(data3) && data1.equals(data4)) {
+					color1 = true;
+					color2 = false; 
+					color3 = true;
+					color4 = true;
+				} else if (data1.equals(data2) && data1.equals(data4)) {
+					color1 = true;
+					color2 = true; 
+					color3 = false;
+					color4 = true;
+				} else if (data2.equals(data3) && data2.equals(data4)) {
+					color1 = false;
+					color2 = true; 
+					color3 = true;
+					color4 = true;
+				} else {
+					color1 = false;
+					color2 = false; 
+					color3 = false;
+					color4 = false;
+				}
+				
 				Number time_stamp = new Number (0, a, data[i][0]);
-				Label x_value = new Label (1, a, directions[i]);
-				Label y_value = new Label (2, a, directions[i+(rows_in_days)]);
-				Label speed_value = new Label (3, a, directions[i+(rows_in_days)*2]);
-				Label direction_value = new Label (4, a, directions[i+(rows_in_days)*3]);
+				Label x_value = new Label (1, a, directions[i],(color1)?cellFormat:cellFormat2);
+				Label y_value = new Label (2, a, directions[i+(rows_in_days)],(color2)?cellFormat:cellFormat2);
+				Label speed_value = new Label (3, a, directions[i+(rows_in_days)*2],(color3)?cellFormat:cellFormat2);
+				Label direction_value = new Label (4, a, directions[i+(rows_in_days)*3],(color4)?cellFormat:cellFormat2);
 
 				writableSheet2.addCell(time_stamp);
 				writableSheet2.addCell(x_value);
