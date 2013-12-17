@@ -1,3 +1,12 @@
+/**
+ * @author Ali K. Afridi
+ * 
+ * Last Modified: 12/07/13
+ * 
+ * This software creates a map of the livestock's location over time
+ * 
+ */
+
 import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
