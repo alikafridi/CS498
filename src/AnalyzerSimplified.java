@@ -1,15 +1,5 @@
-/**
- * @author Ali K. Afridi
- * 
- * Last Modified: 12/17/13
- * 
- * This software analyzes the livestock movement data
- * 
- */
-
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
 import javax.swing.JOptionPane;
 
@@ -17,13 +7,21 @@ import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
+import jxl.write.Label;
+import jxl.write.Number;
+import jxl.write.WritableSheet;
+import jxl.write.WritableWorkbook;
 
-public class AnalyzeData {
+
+public class AnalyzerSimplified {
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		
+		String input_file_name = "xls/M0126.xls";
+		String output_file_name = "movement_data_analysis.xls";
 
 		int days = 4; //days in the data
 		int frame_width = 800;
@@ -35,7 +33,7 @@ public class AnalyzeData {
 
 		try {
 
-			Workbook wrk1 =  Workbook.getWorkbook(new File("xls/M0126.xls"));
+			Workbook wrk1 =  Workbook.getWorkbook(new File(input_file_name));
 
 			Sheet sheet1 = wrk1.getSheet(0);
 			rows=sheet1.getRows();
@@ -64,7 +62,7 @@ public class AnalyzeData {
 				data[i][1] = x_double.intValue();
 				data[i][2] = y_double.intValue();
 				data[i][4] = (y_double.intValue() - 4367535 ) / 35; 
-				System.out.println(data[i][4]);
+				//System.out.println(data[i][4]);
 				if (i == 1) {
 					data[i][3] = 0;
 					directions[i] = "";
@@ -137,46 +135,19 @@ public class AnalyzeData {
 
 					data[i][3] = (int) Math.sqrt(Math.pow(delta_x,2) + Math.pow(delta_y,2));
 				}
-			}// end of for loop
-
-			System.out.println(lrs(directionList));
+			}
 			
-			
-			/* Compass Analysis
-			System.out.println(directionList);
-			boolean find_subsequence = true;
-			int length = 3;
-			String search_string;
-			int repetitions = 0;
-			int max_repetitions = 0;
-			String max_repetition_sequence = "";
-			String remainderList = directionList;
-			
-			while (find_subsequence) {
-				for (int a = 0; a < directionList.length(); a++) {
-					search_string = directionList.substring(a, a + 3);
-					remainderList = directionList.substring(0, a) + directionList.substring(a+3);
-					while (remainderList.indexOf(search_string)!=-1) {
-						repetitions++;
-					}
-					if (repetitions > max_repetitions) {
-						max_repetitions = repetitions;
-						max_repetition_sequence = search_string;
-					}
-				}
-			}*/
-
-			/* Output File 
-			File exlFile = new File("movement_data_editable.xls");
+			File exlFile = new File(output_file_name);
 			WritableWorkbook writableWorkbook = Workbook
 					.createWorkbook(exlFile);
 
-			WritableSheet writableSheet = writableWorkbook.createSheet("Sheet1", 0);
+			WritableSheet writableSheet = writableWorkbook.createSheet("Regions", 0);
 			Label time = new Label (0, 0, "Time");
-			Label x = new Label (1, 0, "X");
-			Label y = new Label (2, 0, "Y");
-			Label speed = new Label (3, 0, "Y");
-			Label direction = new Label (4, 0, "Y");
+			Label x = new Label (1, 0, "Day 1");
+			Label y = new Label (2, 0, "Day 2");
+			Label speed = new Label (3, 0, "Day 3");
+			Label direction = new Label (4, 0, "Day 4");
+			int rows_in_days = 15*24;
 
 			writableSheet.addCell(time);
 			writableSheet.addCell(x);
@@ -184,25 +155,84 @@ public class AnalyzeData {
 			writableSheet.addCell(speed);
 			writableSheet.addCell(direction);
 
-			for (int i = 0; i < rows; i++){
-				Number time_stamp = new Number (0, i, data[i][0]);
-				Number x_value = new Number (1, i, data[i][1]);
-				Number y_value = new Number (2, i, data[i][2]);
-				Number speed_value = new Number (3, i, data[i][3]);
-				Label direction_value = new Label (4, i, directions[i]);
+			int a=1;
+			for (int i = 1; i < rows/4; i++){
+				Number time_stamp = new Number (0, a, data[i][0]);
+				Number x_value = new Number (1, a, data[i][4]);
+				Number y_value = new Number (2, a, data[i+(rows_in_days)][4]);
+				Number speed_value = new Number (3, a, data[i+(rows_in_days)*2][4]);
+				Number direction_value = new Number (4, a, data[i+(rows_in_days)*3][4]);
 
 				writableSheet.addCell(time_stamp);
 				writableSheet.addCell(x_value);
 				writableSheet.addCell(y_value);
 				writableSheet.addCell(speed_value);
 				writableSheet.addCell(direction_value);
-
-
+				a++;
 			}
+			
+			WritableSheet writableSheet2 = writableWorkbook.createSheet("Directions", 1);
+			Label time2 = new Label (0, 0, "Time");
+			Label x2 = new Label (1, 0, "Day 1");
+			Label y2 = new Label (2, 0, "Day 2");
+			Label speed2 = new Label (3, 0, "Day 3");
+			Label direction2 = new Label (4, 0, "Day 4");
+			writableSheet2.addCell(time2);
+			writableSheet2.addCell(x2);
+			writableSheet2.addCell(y2);
+			writableSheet2.addCell(speed2);
+			writableSheet2.addCell(direction2);
+
+			a=1;
+			for (int i = 1; i < rows/4; i++){
+				Number time_stamp = new Number (0, a, data[i][0]);
+				Label x_value = new Label (1, a, directions[i]);
+				Label y_value = new Label (2, a, directions[i+(rows_in_days)]);
+				Label speed_value = new Label (3, a, directions[i+(rows_in_days)*2]);
+				Label direction_value = new Label (4, a, directions[i+(rows_in_days)*3]);
+
+				writableSheet2.addCell(time_stamp);
+				writableSheet2.addCell(x_value);
+				writableSheet2.addCell(y_value);
+				writableSheet2.addCell(speed_value);
+				writableSheet2.addCell(direction_value);
+				a++;
+			}
+			
+			
+			WritableSheet writableSheet3 = writableWorkbook.createSheet("Speed", 2);
+			Label time3 = new Label (0, 0, "Time");
+			Label x3 = new Label (1, 0, "Day 1");
+			Label y3 = new Label (2, 0, "Day 2");
+			Label speed3 = new Label (3, 0, "Day 3");
+			Label direction3 = new Label (4, 0, "Day 4");
+
+			writableSheet3.addCell(time3);
+			writableSheet3.addCell(x3);
+			writableSheet3.addCell(y3);
+			writableSheet3.addCell(speed3);
+			writableSheet3.addCell(direction3);
+
+			a=1;
+			for (int i = 1; i < rows/4; i++){
+				Number time_stamp = new Number (0, a, data[i][0]);
+				Number x_value = new Number (1, a, data[i][3]);
+				Number y_value = new Number (2, a, data[i+(rows_in_days)][3]);
+				Number speed_value = new Number (3, a, data[i+(rows_in_days)*2][3]);
+				Number direction_value = new Number (4, a, data[i+(rows_in_days)*3][3]);
+
+				writableSheet3.addCell(time_stamp);
+				writableSheet3.addCell(x_value);
+				writableSheet3.addCell(y_value);
+				writableSheet3.addCell(speed_value);
+				writableSheet3.addCell(direction_value);
+				a++;
+			}
+			
 
 			//Write and close the workbook
 			writableWorkbook.write();
-			writableWorkbook.close();*/
+			writableWorkbook.close();
 
 		} catch (BiffException e) {
 			e.printStackTrace();
@@ -215,40 +245,4 @@ public class AnalyzeData {
 
 		JOptionPane.showMessageDialog(null, "Data Analysis Complete");
 	}
-	
-
-	// The code below for the lrs and lcp functions was originally not written by Ali Afridi
-	// The code below is a modification of the lrs and lcp code found at http://introcs.cs.princeton.edu/java/42sort/LRS.java.html
-	// The code has been modified to work better for the problem at hand
-	public static String lrs(String s) {
-
-        // form the N suffixes
-        int N  = s.length();
-        String[] suffixes = new String[N];
-        for (int i = 0; i < N; i++) {
-            suffixes[i] = s.substring(i, N);
-        }
-
-        // sort them
-        Arrays.sort(suffixes);
-
-        // find longest repeated substring by comparing adjacent sorted suffixes
-        String lrs = "";
-        for (int i = 0; i < N - 1; i++) {
-            String x = lcp(suffixes[i], suffixes[i+1]);
-            if (x.length() > lrs.length())
-                lrs = x;
-        }
-        return lrs;
-    }
-	
-	// return the longest common prefix of s and t
-    public static String lcp(String s, String t) {
-        int n = Math.min(s.length(), t.length());
-        for (int i = 0; i < n; i++) {
-            if (s.charAt(i) != t.charAt(i))
-                return s.substring(0, i);
-        }
-        return s.substring(0, n);
-    }
 }
