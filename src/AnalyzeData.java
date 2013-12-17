@@ -1,4 +1,3 @@
-import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 
@@ -40,6 +39,9 @@ public class AnalyzeData {
 		frame.add(canvas);
 		frame.setVisible(true);
 		
+		
+		int rows;
+		
 		try {
             
             //Create a workbook object from <span id="IL_AD5" class="IL_AD">the file</span> at specified location.
@@ -50,12 +52,52 @@ public class AnalyzeData {
 			
 			//Get first sheet from the workbook
 			//HSSFSheet sheet = workbook.getSheetAt(0);
-			
-            Workbook wrk1 =  Workbook.getWorkbook(new File("xls/M0126.xls"));
+			Workbook wrk1 =  Workbook.getWorkbook(new File("xls/M0126.xls"));
             
             //Obtain the reference to the first sheet in the workbook
             Sheet sheet1 = wrk1.getSheet(0);
+            rows=sheet1.getRows();
             
+            int [][] data = new int [rows][4]; //Timestamp, X Value, Y Value, Speed
+            String [] directions = new String [rows];
+            
+            for (int i = 0; i < rows; i++) {
+            	Cell time_cell = sheet1.getCell(0, rows);
+            	Cell x_cell = sheet1.getCell(0, rows);
+            	Cell y_cell = sheet1.getCell(0, rows);
+            	
+            	String time_cell_string = time_cell.getContents();
+            	String x_cell_string = x_cell.getContents();
+            	String y_cell_string = y_cell.getContents();
+            	
+            	Double time_double = Double.parseDouble(time_cell_string);
+            	Double x_double = Double.parseDouble(time_cell_string);
+            	Double y_double = Double.parseDouble(time_cell_string);
+            	
+            	data[i][0] = time_double.intValue();
+            	data[i][1] = x_double.intValue();
+            	data[i][2] = y_double.intValue();
+            	if (i == 0) {
+            		data[i][3] = 0;
+            	}
+            	else {
+            		int delta_x = (data[i][1]-data[i-1][1]);
+            		int delta_y = (data[i][2]-data[i-1][2]);
+            		
+            		if (delta_x == 0) {
+            			if (delta_y > 0)
+            				directions[i] = "N";
+            			else
+            				directions[i] = "S";
+            		}
+            		else {
+            			double slope = delta_y/delta_x;
+            			
+            		}
+            		
+            		data[i][3] = (int) Math.sqrt(Math.pow(delta_x,2) + Math.pow(delta_y,2));
+            	}
+            }
  
              
         } catch (BiffException e) {
