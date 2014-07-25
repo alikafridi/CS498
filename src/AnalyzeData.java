@@ -25,10 +25,6 @@ public class AnalyzeData {
 	 */
 	public static void main(String[] args) {
 
-		int days = 4; //days in the data
-		int frame_width = 800;
-		int frame_height = 480;
-
 		JOptionPane.showMessageDialog(null, "Ali Afridi \nCS 498 - Data Analyzer");
 
 		int rows;
@@ -40,7 +36,7 @@ public class AnalyzeData {
 			Sheet sheet1 = wrk1.getSheet(0);
 			rows=sheet1.getRows();
 
-			double [][] data = new double [rows][5]; //Timestamp, X Value, Y Value, Speed, Box #
+			double [][] data = new double [rows][5];
 			String [] directions = new String [rows];
 			String directionList = "";
 			String x_value_list = "";
@@ -197,7 +193,6 @@ public class AnalyzeData {
 				writableSheet.addCell(speed_value);
 				writableSheet.addCell(direction_value);
 
-
 			}
 
 			//Write and close the workbook
@@ -216,8 +211,6 @@ public class AnalyzeData {
 		JOptionPane.showMessageDialog(null, "Data Analysis Complete");
 	}
 	
-
-	// The code below for the lrs and lcp functions was originally not written by Ali Afridi
 	// The code below is a modification of the lrs and lcp code found at http://introcs.cs.princeton.edu/java/42sort/LRS.java.html
 	// The code has been modified to work better for the problem at hand
 	public static String lrs(String s) {
