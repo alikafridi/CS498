@@ -1,5 +1,5 @@
 
-public class AutoPeriodicityHelpers {
+public class StringPeriodicityHelpers {
 
 	public static String calculateDirection(double delta_x, double delta_y) {
 		if (delta_x == 0) {
@@ -53,11 +53,6 @@ public class AutoPeriodicityHelpers {
 			}
 		}
 		return " ,";
-	}
-	
-	public static double calculateSpeed (double x, double y, double old_x, double old_y, double time) {
-		// TODO - Not yet implemented
-		return -1;
 	}
 
 }
