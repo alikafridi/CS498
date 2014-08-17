@@ -7,12 +7,14 @@ import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
 import jxl.write.Label;
+import jxl.write.Number;
 import jxl.write.WritableCell;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
-import jxl.write.Number;
 
 import org.tc33.jheatchart.HeatChart;
+
+import edu.emory.mathcs.jtransforms.fft.DoubleFFT_1D;
 
 
 public class PeriodicBehaviorsHelpers extends JPanel {
@@ -20,13 +22,42 @@ public class PeriodicBehaviorsHelpers extends JPanel {
 	private static int area_size = 56;
 	private static double [][] out_data = new double [315][98];
 
+	public static int [][] binary_data;
+
 	public static void main(String[] args) {
+
 		String input_file_name = "xls/M0110.xls";
 		int [][] ref_areas = findReferenceAreas(input_file_name);
 
 		convertDataToBinary (ref_areas, input_file_name);
 
-		System.out.println("done");
+		System.out.println("# of ref points:" + binary_data.length);
+
+		for (int a = 0; a < binary_data.length; a++) {
+			
+			double[] input = new double[]{
+					0.0176,
+					-0.0620,
+					0.2467,
+					0.4599,
+					-0.0582,
+					0.4694,
+					0.0001,
+					-0.2873};
+
+			DoubleFFT_1D fftDo = new DoubleFFT_1D(input.length);
+
+			double[] fft = new double[binary_data[0].length * 2];
+
+			System.arraycopy(binary_data[a], 0, fft, 0, binary_data[0].length);
+			fftDo.realForwardFull(fft);
+
+			for(double d: fft) {
+				System.out.println(d);
+			}
+			// Need to record the results from the FFT to an excel sheet, with a different column for each excel sheet.
+		}
+
 		return ;
 	}
 
@@ -183,7 +214,6 @@ public class PeriodicBehaviorsHelpers extends JPanel {
 		}
 	}
 
-
 	public static void convertDataToBinary (int [][] ref_areas, String input_file_name) {
 		Workbook wrk1;
 		String input_file_short = input_file_name.substring(4,9);
@@ -193,7 +223,7 @@ public class PeriodicBehaviorsHelpers extends JPanel {
 			Sheet sheet1 = wrk1.getSheet(0);
 			int rows=sheet1.getRows();
 
-			int [][] binary_data = new int [ref_areas.length][rows];
+			binary_data = new int [ref_areas.length][rows];
 
 			for (int a = 0; a < ref_areas.length; a++) {
 				int x_min = ref_areas[a][1];
@@ -239,7 +269,7 @@ public class PeriodicBehaviorsHelpers extends JPanel {
 
 				for (int i = 1; i <= rows; i++){
 					Number value = new Number (a, i, binary_data[a][i-1]);
-					
+
 					writableSheet.addCell((WritableCell) value);
 
 				}

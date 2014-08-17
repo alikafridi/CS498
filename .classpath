@@ -10,5 +10,7 @@
 	<classpathentry kind="lib" path="lib/dom4j-1.6.1.jar"/>
 	<classpathentry kind="lib" path="lib/poi-ooxml-schemas-3.9-20121203.jar"/>
 	<classpathentry kind="lib" path="lib/jheatchart-0.6.jar"/>
+	<classpathentry kind="lib" path="lib/JTransforms-3.0-sources.jar"/>
+	<classpathentry kind="lib" path="lib/jtransforms.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
