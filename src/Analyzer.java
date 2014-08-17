@@ -16,7 +16,7 @@ import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 
 
-public class AnalyzerSimplified {
+public class Analyzer {
 
 	/**
 	 * @param args

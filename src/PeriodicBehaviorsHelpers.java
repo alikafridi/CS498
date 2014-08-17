@@ -16,7 +16,6 @@ import org.tc33.jheatchart.HeatChart;
 
 import edu.emory.mathcs.jtransforms.fft.DoubleFFT_1D;
 
-
 public class PeriodicBehaviorsHelpers extends JPanel {
 
 	private static int area_size = 56;
@@ -33,30 +32,7 @@ public class PeriodicBehaviorsHelpers extends JPanel {
 
 		System.out.println("# of ref points:" + binary_data.length);
 
-		for (int a = 0; a < binary_data.length; a++) {
-			
-			double[] input = new double[]{
-					0.0176,
-					-0.0620,
-					0.2467,
-					0.4599,
-					-0.0582,
-					0.4694,
-					0.0001,
-					-0.2873};
-
-			DoubleFFT_1D fftDo = new DoubleFFT_1D(input.length);
-
-			double[] fft = new double[binary_data[0].length * 2];
-
-			System.arraycopy(binary_data[a], 0, fft, 0, binary_data[0].length);
-			fftDo.realForwardFull(fft);
-
-			for(double d: fft) {
-				System.out.println(d);
-			}
-			// Need to record the results from the FFT to an excel sheet, with a different column for each excel sheet.
-		}
+		analysis();
 
 		return ;
 	}
@@ -287,5 +263,28 @@ public class PeriodicBehaviorsHelpers extends JPanel {
 
 	public static void analysis () {
 		// Fourier Transformations and auto-correlation
+		for (int a = 0; a < binary_data.length; a++) {
+			double[] input = new double[]{
+					0.0176,
+					-0.0620,
+					0.2467,
+					0.4599,
+					-0.0582,
+					0.4694,
+					0.0001,
+					-0.2873};
+
+			DoubleFFT_1D fftDo = new DoubleFFT_1D(input.length);
+
+			double[] fft = new double[binary_data[0].length * 2];
+
+			System.arraycopy(binary_data[a], 0, fft, 0, binary_data[0].length);
+			fftDo.realForwardFull(fft);
+
+			for(double d: fft) {
+				System.out.println(d);
+			}
+			// Need to record the results from the FFT to an excel sheet, with a different column for each excel sheet.
+		}
 	}
 }
