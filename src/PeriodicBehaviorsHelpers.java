@@ -11,6 +11,8 @@ import jxl.write.Number;
 import jxl.write.WritableCell;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
+import jxl.write.WriteException;
+import jxl.write.biff.RowsExceededException;
 
 import org.tc33.jheatchart.HeatChart;
 
@@ -21,18 +23,25 @@ public class PeriodicBehaviorsHelpers extends JPanel {
 	private static int area_size = 56;
 	private static double [][] out_data = new double [315][98];
 
-	public static int [][] binary_data;
+	public static double [][] binary_data;
 
 	public static void main(String[] args) {
 
-		String input_file_name = "xls/M0110.xls";
+		String input_file_name = "xls/movement_data.xls";
 		int [][] ref_areas = findReferenceAreas(input_file_name);
+		
+		System.gc();
 
 		convertDataToBinary (ref_areas, input_file_name);
 
+		System.gc();
+
 		System.out.println("# of ref points:" + binary_data.length);
 
-		analysis();
+		analysis(input_file_name);
+
+		System.gc();
+		System.out.print("done");
 
 		return ;
 	}
@@ -199,7 +208,7 @@ public class PeriodicBehaviorsHelpers extends JPanel {
 			Sheet sheet1 = wrk1.getSheet(0);
 			int rows=sheet1.getRows();
 
-			binary_data = new int [ref_areas.length][rows];
+			binary_data = new double [ref_areas.length][rows];
 
 			for (int a = 0; a < ref_areas.length; a++) {
 				int x_min = ref_areas[a][1];
@@ -261,30 +270,48 @@ public class PeriodicBehaviorsHelpers extends JPanel {
 		}
 	}
 
-	public static void analysis () {
-		// Fourier Transformations and auto-correlation
+	public static void analysis (String input_file_name) {
+		String input_file_short = input_file_name.substring(4,9);
+		// Fourier Transformation
+		try {
+		File exlFile = new File("fft_results/" + input_file_short + "_fft"+".xls");
+		WritableWorkbook writableWorkbook = Workbook
+				.createWorkbook(exlFile);
+
+		WritableSheet writableSheet = writableWorkbook.createSheet("Sheet1", 0);
+		
 		for (int a = 0; a < binary_data.length; a++) {
-			double[] input = new double[]{
-					0.0176,
-					-0.0620,
-					0.2467,
-					0.4599,
-					-0.0582,
-					0.4694,
-					0.0001,
-					-0.2873};
+			DoubleFFT_1D fftDo = new DoubleFFT_1D(binary_data[0].length);
 
-			DoubleFFT_1D fftDo = new DoubleFFT_1D(input.length);
-
-			double[] fft = new double[binary_data[0].length * 2];
+			double[] fft = new double[(binary_data[0].length * 2)+1];
+			
+			System.out.print("binary length:" + binary_data[0].length);
 
 			System.arraycopy(binary_data[a], 0, fft, 0, binary_data[0].length);
 			fftDo.realForwardFull(fft);
 
-			for(double d: fft) {
-				System.out.println(d);
+			Label label = new Label (a, 0, "Ref_Area_"+a);
+
+			writableSheet.addCell(label);
+			
+			for (int i = 1; i < fft.length; i++) {
+				double d = fft[i];
+			
+				System.out.println("a:" );
+				
+				Number value = new Number (a, i, fft[i-1]);
+
+				writableSheet.addCell((WritableCell) value);
 			}
-			// Need to record the results from the FFT to an excel sheet, with a different column for each excel sheet.
+		}
+
+		//Write and close the workbook
+		writableWorkbook.write();
+		writableWorkbook.close();
+		// save the file
+		}
+		catch (Exception E) {
+			E.printStackTrace();
 		}
 	}
 }
